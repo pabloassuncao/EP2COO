@@ -11,7 +11,7 @@ import Filter.*;
 import Filter.Compare.Compare;
 import Filter.Compare.CompareOptions;
 import Filter.Compare.CompareStrategy;
-import GeradorDeRelatório.GeradorDeRelatorios;
+import GeradorDeRelatorio.GeradorDeRelatorios;
 import Order.*;
 import Produto.*;
 import Sort.*;

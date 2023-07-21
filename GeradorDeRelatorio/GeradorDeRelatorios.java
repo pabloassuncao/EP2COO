@@ -1,4 +1,4 @@
-package GeradorDeRelatório;
+package GeradorDeRelatorio;
 import java.io.PrintWriter;
 import java.util.*;
 

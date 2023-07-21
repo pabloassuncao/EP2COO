@@ -128,9 +128,9 @@ public class ProdutoFormatado implements Produto {
 
 		NumberFormat fmt = NumberFormat.getCurrencyInstance();
 
-		if (this.negrito) formatacao += "font-weight:bold; ";
-		if (this.italico) formatacao += "font-style:italic; ";
-		if (this.colorido) formatacao += "color:" + this.color + "; ";
+		if (this.negrito) formatacao += "font-weight:bold;";
+		if (this.italico) formatacao += "font-style:italic;";
+		if (this.colorido) formatacao += "color:" + this.color + ";";
 
 		if (this.negrito || this.italico || this.colorido){
 			return "<span style=\"" + formatacao + "\">" + getDescricao() + SEPARADOR + getCategoria() + SEPARADOR + fmt.format(getPreco()) + SEPARADOR + getQtdEstoque() + " unidade(s) em estoque</span>";
