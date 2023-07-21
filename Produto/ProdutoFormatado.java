@@ -14,7 +14,7 @@ public class ProdutoFormatado implements Produto {
 	private boolean italico;
 	private boolean colorido;
 	private String color;
-	private String formatacao;
+	private String formatacao = "";
 
 	public ProdutoFormatado(Produto produto, boolean negrito, boolean italico, boolean colorido, String color){
 		
