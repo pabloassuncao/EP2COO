@@ -2,6 +2,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+
+
 import Filter.*;
 import Filter.Compare.Compare;
 import Filter.Compare.CompareOptions;
@@ -28,8 +33,9 @@ public class Main {
 	public static final int FORMATO_PADRAO  = 0b0000;
 	public static final int FORMATO_NEGRITO = 0b0001;
 	public static final int FORMATO_ITALICO = 0b0010;
+	public static final int FORMATO_COLORIDO = 0b0100;
 
-  public static List<Produto> carregaProdutos(){
+  public static List<Produto> carregaProdutosEstatico(){
 		return Arrays.asList(new Produto [] { 
 			new ProdutoPadrao( 1, "O Hobbit", "Livros", 2, 34.90),
 			new ProdutoPadrao( 2, "Notebook Core i7", "Informatica", 5, 1999.90),
@@ -66,9 +72,37 @@ public class Main {
 		});
 	}
 
+	// Implementa a leitura dos produtos do arquivo produtos.csv e retorna uma lista de produtos
+	public static List<Produto> carregaProdutosCSV(String arquivo) throws IOException {
+		List<Produto> produtos = new ArrayList<>();
+		BufferedReader reader = new BufferedReader(new FileReader(arquivo));
+		String line = reader.readLine();
+		while ((line = reader.readLine()) != null) {
+			String[] fields = line.split(", ");
+			int id = Integer.parseInt(fields[0]);
+			String descricao = fields[1];
+			String categoria = fields[2];
+			int estoque = Integer.parseInt(fields[3]);
+			double preco = Double.parseDouble(fields[4]);
+			Produto produto = new ProdutoPadrao(id, descricao, categoria, estoque, preco);
+
+			Boolean negrito = Boolean.parseBoolean(fields[5]);
+			Boolean italico = Boolean.parseBoolean(fields[6]);
+			String color = fields[7];
+
+			if(negrito || italico || color != null) {
+				produto = new ProdutoFormatado(produto, negrito, italico, (color != null), color);
+			}
+
+			produtos.add(produto);
+		}
+		reader.close();
+		return produtos;
+	}
+
   public static void main(String [] args) {
 
-		if(args.length < 6){
+		if(args.length < 7){
 
 			System.out.println("Uso:");
 			System.out.println("\tjava " + GeradorDeRelatorios.class.getName() + " <algoritmo> <critério de ordenação> <critério de filtragem> <parâmetro de filtragem> <opções de formatação>");
@@ -79,7 +113,8 @@ public class Main {
 			System.out.println("\tcriterio de filtragem: 'todos' ou 'estoque' ou 'categoria' ou 'preco' ou 'descricao'");
       System.out.println("\t\tcritério de filtragem: 'maior_igual' ou 'maior' ou 'igual' ou 'menor_igual' ou 'menor' ou 'diferente' ou 'contem'");
 			System.out.println("\tparâmetro de filtragem: argumentos adicionais necessários para a filtragem, separados por vírgula caso haja mais de um, como por exemplo: '10,25'"); 
-			System.out.println("\topções de formatação: 'negrito' e/ou 'italico'");
+			System.out.println("\torigem dos dados: 'estatico' ou 'csv'");
+			System.out.println("\topções de formatação: 'negrito' e/ou 'italico' e/ou 'colorido' e a cor desejada em seguida com a formatação desejada para o relatório");
 			System.out.println();
 			System.exit(1);
 		}
@@ -97,10 +132,10 @@ public class Main {
 
       String filterValue1Selected = args[5].split(",")[0];
       String filterValue2Selected = args[5].split(",").length > 1 ? args[5].split(",")[1] : null;
-      
+
       String [] formatOptions = new String[2];
-      formatOptions[0] = args.length > 6 ? args[6] : null;
-      formatOptions[1] = args.length > 7 ? args[7] : null;
+      formatOptions[0] = args.length > 7 ? args[7] : null;
+      formatOptions[1] = args.length > 8 ? args[8] : null;
       int formato = FORMATO_PADRAO;
       
       for(int i = 0; i < formatOptions.length; i++) {
@@ -109,8 +144,24 @@ public class Main {
         formato |= (op != null ? op.equals("negrito") ? FORMATO_NEGRITO : (op.equals("italico") ? FORMATO_ITALICO : 0) : 0); 
       }
 
-      if(sortStrategySelected == null || orderStrategySelected == null || orderTypeSelected == null || (filterStrategySelected == null && !args[3].equals("todos")) || compareStrategySelected == null || filterValue1Selected == null) {
+			List<Produto> produtos = null;
+
+			try {
+				produtos = args[6].equals("estatico") ? carregaProdutosEstatico() : carregaProdutosCSV("produtos.csv");
+			} catch (IOException e) {
+				System.out.println("Erro ao carregar produtos do arquivo CSV!");
+				e.printStackTrace();
+			}
+
+      if(produtos == null ||
+				sortStrategySelected == null ||
+				orderStrategySelected == null ||
+				orderTypeSelected == null ||
+				(filterStrategySelected == null && !args[3].equals("todos")) ||
+				compareStrategySelected == null ||
+				filterValue1Selected == null) {
         System.out.println("Alguma opção está inválida! Encontramos:");
+				System.out.println("Origem dos dados: " + args[6]);
         System.out.println("Algoritmo: " + sortStrategySelected);
         System.out.println("Criterio de ordenação: " + orderStrategySelected);
         System.out.println("Ordem: " + orderTypeSelected);
@@ -120,8 +171,6 @@ public class Main {
         System.out.println("Valor do filtro 2: " + filterValue2Selected);
         System.exit(1);
       }
-
-      List<Produto> produtos = carregaProdutos();
 
       Compare compare = new Compare(compareOp, compareStrategySelected);
 

@@ -34,30 +34,10 @@ public class GeradorDeRelatorios {
 		int count = 0;
 
 		for (Produto p : produtos) {
-			System.out.println(p.getPreco());
+			System.out.println(p.getPreco() + "  " + p.getDescricao());
 			out.print("<li>");
-
-			if((format_flags & FORMATO_ITALICO) > 0){
-
-				out.print("<span style=\"font-style:italic\">");
-			}
-
-			if((format_flags & FORMATO_NEGRITO) > 0){
-
-				out.print("<span style=\"font-weight:bold\">");
-			} 
 		
 			out.print(p.formataParaImpressao());
-
-			if((format_flags & FORMATO_NEGRITO) > 0){
-
-				out.print("</span>");
-			} 
-
-			if((format_flags & FORMATO_ITALICO) > 0){
-
-				out.print("</span>");
-			}
 
 			out.println("</li>");
 			count++;
