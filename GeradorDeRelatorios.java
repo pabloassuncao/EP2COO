@@ -1,7 +1,9 @@
 import java.io.PrintWriter;
-import java.io.IOException;
-
 import java.util.*;
+
+import Produto.*;
+
+import java.io.IOException;
 
 public class GeradorDeRelatorios {
 
@@ -22,7 +24,7 @@ public class GeradorDeRelatorios {
 	public static final int FORMATO_NEGRITO = 0b0001;
 	public static final int FORMATO_ITALICO = 0b0010;
 
-	private Produto [] produtos;
+	private List<Produto> produtos;
 	private String algoritmo;
 	private String criterio;
 	private String filtro;
@@ -31,11 +33,11 @@ public class GeradorDeRelatorios {
 
 	public GeradorDeRelatorios(Produto [] produtos, String algoritmo, String criterio, String filtro, String argFiltro, int format_flags){
 
-		this.produtos = new Produto[produtos.length];
+		this.produtos = new ArrayList<>();
 		
 		for(int i = 0; i < produtos.length; i++){
 		
-			this.produtos[i] = produtos[i];
+			this.produtos.add(produtos[i]);
 		}
 
 		this.algoritmo = algoritmo;
@@ -47,7 +49,7 @@ public class GeradorDeRelatorios {
 
 	private int particiona(int ini, int fim){
 
-		Produto x = produtos[ini];
+		Produto x = produtos.get(ini);
 		int i = (ini - 1);
 		int j = (fim + 1);
 
@@ -58,24 +60,24 @@ public class GeradorDeRelatorios {
 				do{ 
 					j--;
 
-				} while(produtos[j].getDescricao().compareToIgnoreCase(x.getDescricao()) > 0);
+				} while(produtos.get(j).getDescricao().compareToIgnoreCase(x.getDescricao()) > 0);
 			
 				do{
 					i++;
 
-				} while(produtos[i].getDescricao().compareToIgnoreCase(x.getDescricao()) < 0);
+				} while(produtos.get(i).getDescricao().compareToIgnoreCase(x.getDescricao()) < 0);
 			}
 			else if(criterio.equals(CRIT_PRECO_CRESC)){
 
 				do{ 
 					j--;
 
-				} while(produtos[j].getPreco() > x.getPreco());
+				} while(produtos.get(j).getPreco() > x.getPreco());
 			
 				do{
 					i++;
 
-				} while(produtos[i].getPreco() < x.getPreco());
+				} while(produtos.get(i).getPreco() < x.getPreco());
 			}
 
 			else if(criterio.equals(CRIT_ESTOQUE_CRESC)){
@@ -83,12 +85,12 @@ public class GeradorDeRelatorios {
 				do{ 
 					j--;
 
-				} while(produtos[j].getQtdEstoque() > x.getQtdEstoque());
+				} while(produtos.get(j).getQtdEstoque() > x.getQtdEstoque());
 			
 				do{
 					i++;
 
-				} while(produtos[i].getQtdEstoque() < x.getQtdEstoque());
+				} while(produtos.get(i).getQtdEstoque() < x.getQtdEstoque());
 
 			}
 			else{
@@ -97,9 +99,9 @@ public class GeradorDeRelatorios {
 			}
 
 			if(i < j){
-				Produto temp = produtos[i];
-				produtos[i] = produtos[j]; 				
-				produtos[j] = temp;
+				Produto temp = produtos.get(i);
+				produtos.set(i, produtos.get(j));		
+				produtos.set(j, temp);
 			}
 			else return j;
 		}
@@ -111,34 +113,34 @@ public class GeradorDeRelatorios {
 
 			for(int i = ini; i <= fim; i++){
 
-				Produto x = produtos[i];				
+				Produto x = produtos.get(i);				
 				int j = (i - 1);
 
 				while(j >= ini){
 
 					if(criterio.equals(CRIT_DESC_CRESC)){
 
-						if( x.getDescricao().compareToIgnoreCase(produtos[j].getDescricao()) < 0 ){
+						if( x.getDescricao().compareToIgnoreCase(produtos.get(j).getDescricao()) < 0 ){
 			
-							produtos[j + 1] = produtos[j];
+							produtos.set(j + 1, produtos.get(j));
 							j--;
 						}
 						else break;
 					}
 					else if(criterio.equals(CRIT_PRECO_CRESC)){
 
-						if(x.getPreco() < produtos[j].getPreco()){
+						if(x.getPreco() < produtos.get(j).getPreco()){
 			
-							produtos[j + 1] = produtos[j];
+							produtos.set(j + 1, produtos.get(j));
 							j--;
 						}
 						else break;
 					}
 					else if(criterio.equals(CRIT_ESTOQUE_CRESC)){
 
-						if(x.getQtdEstoque() < produtos[j].getQtdEstoque()){
+						if(x.getQtdEstoque() < produtos.get(j).getQtdEstoque()){
 			
-							produtos[j + 1] = produtos[j];
+							produtos.set(j + 1, produtos.get(j));
 							j--;
 						}
 						else break;
@@ -146,7 +148,7 @@ public class GeradorDeRelatorios {
 					else throw new RuntimeException("Criterio invalido!");
 				}
 
-				produtos[j + 1] = x;
+				produtos.set(j + 1, x);
 			}
 		}
 		else if(algoritmo.equals(ALG_QUICKSORT)){
@@ -167,7 +169,7 @@ public class GeradorDeRelatorios {
 	
 	public void debug(){
 
-		System.out.println("Gerando relatório para array contendo " + produtos.length + " produto(s)");
+		System.out.println("Gerando relatório para array contendo " + produtos.size() + " produto(s)");
 		System.out.println("parametro filtro = '" + argFiltro + "'"); 
 	}
 
@@ -176,7 +178,7 @@ public class GeradorDeRelatorios {
 
 		debug();
 
-		ordena(0, produtos.length - 1);
+		ordena(0, produtos.size() - 1);
 
 		PrintWriter out = new PrintWriter(arquivoSaida);
 
@@ -188,9 +190,9 @@ public class GeradorDeRelatorios {
 
 		int count = 0;
 
-		for(int i = 0; i < produtos.length; i++){
+		for(int i = 0; i < produtos.size(); i++){
 
-			Produto p = produtos[i];
+			Produto p = produtos.get(i);
 			boolean selecionado = false;
 
 			if(filtro.equals(FILTRO_TODOS)){
@@ -206,6 +208,7 @@ public class GeradorDeRelatorios {
 				if(p.getCategoria().equalsIgnoreCase(argFiltro)) selecionado = true;
 			}
 			else{
+				out.close();
 				throw new RuntimeException("Filtro invalido!");			
 			}
 
@@ -241,7 +244,7 @@ public class GeradorDeRelatorios {
 		}
 
 		out.println("</ul>");
-		out.println(count + " produtos listados, de um total de " + produtos.length + ".");
+		out.println(count + " produtos listados, de um total de " + produtos.size() + ".");
 		out.println("</body>");
 		out.println("</html>");
 
