@@ -119,78 +119,55 @@ public class Main {
 			System.exit(1);
 		}
 
-      SortStrategy sortStrategySelected = Sort.sortOptions.get(SortTypes.valueOf(args[0].toUpperCase()));
+		try {
+			SortStrategy sortStrategySelected = Sort.sortOptions.get(SortTypes.valueOf(args[0].toUpperCase()));
 
-      OrderStrategy orderStrategySelected = Order.orderOptions.get(OrderOptions.valueOf(args[1].toUpperCase()));
+			OrderStrategy orderStrategySelected = Order.orderOptions.get(OrderOptions.valueOf(args[1].toUpperCase()));
 
-      OrderTypes orderTypeSelected = OrderTypes.valueOf(args[2].toUpperCase());
+			OrderTypes orderTypeSelected = OrderTypes.valueOf(args[2].toUpperCase());
 
-      FilterStrategy filterStrategySelected = args[3].equals("todos") ? null : Filter.filterOptions.get(FilterOptions.valueOf(args[3].toUpperCase()));
-      CompareStrategy compareStrategySelected = Compare.compareOptions.get(CompareOptions.valueOf(args[4].toUpperCase()));
-      
-      CompareOptions compareOp = CompareOptions.valueOf(args[4].toUpperCase());
+			FilterStrategy filterStrategySelected = args[3].equals("todos") ? null : Filter.filterOptions.get(FilterOptions.valueOf(args[3].toUpperCase()));
+			CompareStrategy compareStrategySelected = Compare.compareOptions.get(CompareOptions.valueOf(args[4].toUpperCase()));
+			
+			CompareOptions compareOp = CompareOptions.valueOf(args[4].toUpperCase());
 
-      String filterValue1Selected = args[5].split(",")[0];
-      String filterValue2Selected = args[5].split(",").length > 1 ? args[5].split(",")[1] : null;
+			String filterValue1Selected = args[5].split(",")[0];
+			String filterValue2Selected = args[5].split(",").length > 1 ? args[5].split(",")[1] : null;
 
-      String [] formatOptions = new String[2];
-      formatOptions[0] = args.length > 7 ? args[7] : null;
-      formatOptions[1] = args.length > 8 ? args[8] : null;
-      int formato = FORMATO_PADRAO;
-      
-      for(int i = 0; i < formatOptions.length; i++) {
+			String [] formatOptions = new String[2];
+			formatOptions[0] = args.length > 7 ? args[7] : null;
+			formatOptions[1] = args.length > 8 ? args[8] : null;
+			int formato = FORMATO_PADRAO;
+			
+			for(int i = 0; i < formatOptions.length; i++) {
 
-        String op = formatOptions[i];
-        formato |= (op != null ? op.equals("negrito") ? FORMATO_NEGRITO : (op.equals("italico") ? FORMATO_ITALICO : 0) : 0); 
-      }
+				String op = formatOptions[i];
+				formato |= (op != null ? op.equals("negrito") ? FORMATO_NEGRITO : (op.equals("italico") ? FORMATO_ITALICO : 0) : 0); 
+			}
 
 			List<Produto> produtos = null;
 
-			try {
-				produtos = args[6].equals("estatico") ? carregaProdutosEstatico() : carregaProdutosCSV("produtos.csv");
-			} catch (IOException e) {
-				System.out.println("Erro ao carregar produtos do arquivo CSV!");
-				e.printStackTrace();
-			}
+			produtos = args[6].equals("estatico") ? carregaProdutosEstatico() : carregaProdutosCSV("produtos.csv");
+		
+			Compare compare = new Compare(compareOp, compareStrategySelected);
 
-      if(produtos == null ||
-				sortStrategySelected == null ||
-				orderStrategySelected == null ||
-				orderTypeSelected == null ||
-				(filterStrategySelected == null && !args[3].equals("todos")) ||
-				compareStrategySelected == null ||
-				filterValue1Selected == null) {
-        System.out.println("Alguma opção está inválida! Encontramos:");
-				System.out.println("Origem dos dados: " + args[6]);
-        System.out.println("Algoritmo: " + sortStrategySelected);
-        System.out.println("Criterio de ordenação: " + orderStrategySelected);
-        System.out.println("Ordem: " + orderTypeSelected);
-        System.out.println("Filtro: " + filterStrategySelected);
-        System.out.println("Comparação do filtro: " + compareStrategySelected);
-        System.out.println("Valor do filtro 1: " + filterValue1Selected);
-        System.out.println("Valor do filtro 2: " + filterValue2Selected);
-        System.exit(1);
-      }
+			Filter filter = new Filter(filterStrategySelected, compare);
 
-      Compare compare = new Compare(compareOp, compareStrategySelected);
+			produtos = filter.filter(produtos, filterValue1Selected, filterValue2Selected);
 
-      Filter filter = new Filter(filterStrategySelected, compare);
+			Order order = new Order(orderStrategySelected, orderTypeSelected);
 
-      produtos = filter.filter(produtos, filterValue1Selected, filterValue2Selected);
-
-      Order order = new Order(orderStrategySelected, orderTypeSelected);
-
-      Sort sort = new Sort(sortStrategySelected, order);
-      
-      produtos = sort.ordena(produtos);
-
-		try{
-
-      GeradorDeRelatorios gdr = new GeradorDeRelatorios(produtos, formato);
-			gdr.geraRelatorio("saida.html");
-		}
-		catch(IOException e){
+			Sort sort = new Sort(sortStrategySelected, order);
 			
+			produtos = sort.ordena(produtos);
+
+			GeradorDeRelatorios gdr = new GeradorDeRelatorios(produtos, formato);
+			gdr.geraRelatorio("saida.html");
+		} catch (IOException e) {
+			System.out.println("Erro ao carregar produtos do arquivo CSV!");
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Erro ao gerar relatório!");
 			e.printStackTrace();
 		}
 	}
