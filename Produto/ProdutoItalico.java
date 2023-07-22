@@ -17,7 +17,7 @@ public class ProdutoItalico extends ProdutoFormatadoDecorator {
 		if (produto instanceof ProdutoFormatadoDecorator) {
 			this.formatacao += ((ProdutoFormatadoDecorator) produto).getFormatacao();
 		}
-		this.formatacao += "font-style: italic;";
+		this.formatacao += "font-style:italic;";
 
 		setId(produto.getId());
 		setDescricao(produto.getDescricao());

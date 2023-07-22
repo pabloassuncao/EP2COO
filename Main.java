@@ -150,8 +150,10 @@ public class Main {
 					if(formatArgs[i] != null) {
 						if(formatArgs[i].indexOf(',') > -1) {
 							String [] formatArgsSplit = formatArgs[i].split(",");
-							Main.colorido = true;
-							Main.color = formatArgsSplit[1];
+							if (formatArgsSplit[0].toUpperCase().equals(formatOptions.COLORIDO.toString())){
+								Main.colorido = true;
+								Main.color = formatArgsSplit[1];
+							}
 						} else if(formatArgs[i].toUpperCase().equals(formatOptions.NEGRITO.toString())) {
 							Main.negrito = true;
 						} else if(formatArgs[i].toUpperCase().equals(formatOptions.ITALICO.toString())) {
@@ -170,13 +172,11 @@ public class Main {
 			produtos = args[6].equals("estatico") ? carregaProdutosEstatico() : carregaProdutosCSV(args[7]);
 			
 			if(Main.negrito || Main.italico || Main.colorido) {
-				List<Produto> produtosFormatados = new ArrayList<>();
-				for(Produto produto : produtos) {
-					if(Main.negrito) produto = new ProdutoNegrito(produto);
-					if(Main.italico) produto = new ProdutoItalico(produto);
-					if(Main.colorido) produto = new ProdutoColorido(produto, Main.color);
+				for(int i = 0; i < produtos.size(); i++) {
+					if(Main.negrito) produtos.set(i, new ProdutoNegrito(produtos.get(i)));
+					if(Main.italico) produtos.set(i, new ProdutoItalico(produtos.get(i)));
+					if(Main.colorido) produtos.set(i, new ProdutoColorido(produtos.get(i), Main.color));
 				}
-				produtos = produtosFormatados;
 			}
 
 			Compare compare = new Compare(compareOp, compareStrategySelected);
