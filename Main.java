@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 
 import Filter.*;
+import Filter.Compare.AllCompare;
 import Filter.Compare.Compare;
 import Filter.Compare.CompareOptions;
 import Filter.Compare.CompareStrategy;
@@ -94,9 +95,9 @@ public class Main {
 			Boolean italico = Boolean.parseBoolean(fields[6]);
 			String color = fields[7];
 
-			if(negrito || italico || !color.equals("#000000")) {
-				produto = new ProdutoFormatado(produto, negrito, italico, (!color.equals("#000000")), color);
-			}
+			if(negrito) produto = new ProdutoNegrito(produto);
+			if(italico) produto = new ProdutoItalico(produto);
+			if(!color.equals("#000000")) produto = new ProdutoColorido(produto, color);
 
 			produtos.add(produto);
 		}
@@ -131,8 +132,8 @@ public class Main {
 
 			OrderTypes orderTypeSelected = OrderTypes.valueOf(args[2].toUpperCase());
 
-			FilterStrategy filterStrategySelected = args[3].equals("todos") ? null : Filter.filterOptions.get(FilterOptions.valueOf(args[3].toUpperCase()));
-			CompareStrategy compareStrategySelected = Compare.compareOptions.get(CompareOptions.valueOf(args[4].toUpperCase()));
+			FilterStrategy filterStrategySelected = args[3].equals("todos") ? new AllElementsFilter() : Filter.filterOptions.get(FilterOptions.valueOf(args[3].toUpperCase()));
+			CompareStrategy compareStrategySelected = args[3].equals("todos") ? new AllCompare() : Compare.compareOptions.get(CompareOptions.valueOf(args[4].toUpperCase()));
 			
 			CompareOptions compareOp = CompareOptions.valueOf(args[4].toUpperCase());
 
@@ -171,7 +172,9 @@ public class Main {
 			if(Main.negrito || Main.italico || Main.colorido) {
 				List<Produto> produtosFormatados = new ArrayList<>();
 				for(Produto produto : produtos) {
-					produtosFormatados.add(new ProdutoFormatado(produto, Main.negrito, Main.italico, Main.colorido, Main.color));
+					if(Main.negrito) produto = new ProdutoNegrito(produto);
+					if(Main.italico) produto = new ProdutoItalico(produto);
+					if(Main.colorido) produto = new ProdutoColorido(produto, Main.color);
 				}
 				produtos = produtosFormatados;
 			}
