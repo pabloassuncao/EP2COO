@@ -28,12 +28,16 @@ public class Main {
 	public static final String FILTRO_ESTOQUE_MENOR_OU_IQUAL_A = "estoque_menor_igual";
 	public static final String FILTRO_CATEGORIA_IGUAL_A = "categoria_igual";
 
-	// operador bit a bit "ou" pode ser usado para combinar mais de  
-	// um estilo de formatacao simultaneamente (veja como no main)
-	public static final int FORMATO_PADRAO  = 0b0000;
-	public static final int FORMATO_NEGRITO = 0b0001;
-	public static final int FORMATO_ITALICO = 0b0010;
-	public static final int FORMATO_COLORIDO = 0b0100;
+	public static boolean negrito;
+	public static boolean italico;
+	public static boolean colorido;
+	public static String color;
+ 
+	public static enum formatOptions {
+		NEGRITO,
+		ITALICO,
+		COLORIDO
+	}
 
   public static List<Produto> carregaProdutosEstatico(){
 		return Arrays.asList(new Produto [] { 
@@ -114,7 +118,7 @@ public class Main {
       System.out.println("\t\tcritério de filtragem: 'maior_igual' ou 'maior' ou 'igual' ou 'menor_igual' ou 'menor' ou 'diferente' ou 'contem'");
 			System.out.println("\tparâmetro de filtragem: argumentos adicionais necessários para a filtragem, separados por vírgula caso haja mais de um, como por exemplo: '10,25'"); 
 			System.out.println("\torigem dos dados: 'estatico' ou 'csv'");
-			System.out.println("\topções de formatação: 'negrito' e/ou 'italico' e/ou 'colorido' e a cor desejada em seguida com a formatação desejada para o relatório");
+			System.out.println("\topções de formatação: 'negrito' e/ou 'italico' e/ou 'colorido' e a cor desejada separada por virgula (colorido,corDesejada)");
 			System.out.println();
 			System.exit(1);
 		}
@@ -134,21 +138,43 @@ public class Main {
 			String filterValue1Selected = args[5].split(",")[0];
 			String filterValue2Selected = args[5].split(",").length > 1 ? args[5].split(",")[1] : null;
 
-			String [] formatOptions = new String[2];
-			formatOptions[0] = args.length > 7 ? args[7] : null;
-			formatOptions[1] = args.length > 8 ? args[8] : null;
-			int formato = FORMATO_PADRAO;
-			
-			for(int i = 0; i < formatOptions.length; i++) {
-
-				String op = formatOptions[i];
-				formato |= (op != null ? op.equals("negrito") ? FORMATO_NEGRITO : (op.equals("italico") ? FORMATO_ITALICO : 0) : 0); 
+			if (args.length > 7) {
+				String [] formatArgs = new String[3];
+				formatArgs[0] = args.length > 7 ? args[7] : null;
+				formatArgs[1] = args.length > 8 ? args[8] : null;
+				formatArgs[2] = args.length > 9 ? args[9] : null;
+				
+				for(int i = 0; i < formatArgs.length; i++) {
+					if(formatArgs[i] != null) {
+						if(formatArgs[i].indexOf(',') > -1) {
+							String [] formatArgsSplit = formatArgs[i].split(",");
+							Main.colorido = true;
+							Main.color = formatArgsSplit[1];
+						} else if(formatArgs[i].toUpperCase().equals(formatOptions.NEGRITO.toString())) {
+							Main.negrito = true;
+						} else if(formatArgs[i].equals(formatOptions.ITALICO.toString())) {
+							Main.italico = true;
+						}
+					}
+				}
+			} else {
+				Main.negrito = false;
+				Main.italico = false;
+				Main.colorido = false;
 			}
 
 			List<Produto> produtos = null;
 
 			produtos = args[6].equals("estatico") ? carregaProdutosEstatico() : carregaProdutosCSV("produtos.csv");
-		
+			
+			if(Main.negrito || Main.italico || Main.colorido) {
+				List<Produto> produtosFormatados = new ArrayList<>();
+				for(Produto produto : produtos) {
+					produtosFormatados.add(new ProdutoFormatado(produto, Main.negrito, Main.italico, Main.colorido, Main.color));
+				}
+				produtos = produtosFormatados;
+			}
+
 			Compare compare = new Compare(compareOp, compareStrategySelected);
 
 			Filter filter = new Filter(filterStrategySelected, compare);
@@ -161,7 +187,7 @@ public class Main {
 			
 			produtos = sort.ordena(produtos);
 
-			GeradorDeRelatorios gdr = new GeradorDeRelatorios(produtos, formato);
+			GeradorDeRelatorios gdr = new GeradorDeRelatorios(produtos);
 			gdr.geraRelatorio("saida.html");
 		} catch (IOException e) {
 			System.out.println("Erro ao carregar produtos do arquivo CSV!");

@@ -7,18 +7,11 @@ import Produto.*;
 import java.io.IOException;
 
 public class GeradorDeRelatorios {
-	// operador bit a bit "ou" pode ser usado para combinar mais de  
-	// um estilo de formatacao simultaneamente (veja como no main)
-	public static final int FORMATO_PADRAO  = 0b0000;
-	public static final int FORMATO_NEGRITO = 0b0001;
-	public static final int FORMATO_ITALICO = 0b0010;
-
 	private List<Produto> produtos;
 	int format_flags;
 
-	public GeradorDeRelatorios(List<Produto> produtos, int format_flags){
+	public GeradorDeRelatorios(List<Produto> produtos){
 		this.produtos = produtos;
-		this.format_flags = format_flags;
 	}
 
 
