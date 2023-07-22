@@ -106,7 +106,7 @@ public class Main {
 
   public static void main(String [] args) {
 
-		if(args.length < 7){
+		if(args.length < 8){
 
 			System.out.println("Uso:");
 			System.out.println("\tjava " + GeradorDeRelatorios.class.getName() + " <algoritmo> <critério de ordenação> <critério de filtragem> <parâmetro de filtragem> <opções de formatação>");
@@ -115,9 +115,10 @@ public class Main {
 			System.out.println("\tcriterio de ordenação: 'preco' ou 'descricao' ou 'estoque'");
       System.out.println("\t\tcritério de ordenação: 'asc' ou 'desc'");
 			System.out.println("\tcriterio de filtragem: 'todos' ou 'estoque' ou 'categoria' ou 'preco' ou 'descricao'");
-      System.out.println("\t\tcritério de filtragem: 'maior_igual' ou 'maior' ou 'igual' ou 'menor_igual' ou 'menor' ou 'diferente' ou 'contem'");
+      System.out.println("\t\tcritério de filtragem: 'maior_igual' ou 'maior' ou 'igual' ou 'menor_igual' ou 'menor' ou 'diferente' ou 'contem' ou 'entre'");
 			System.out.println("\tparâmetro de filtragem: argumentos adicionais necessários para a filtragem, separados por vírgula caso haja mais de um, como por exemplo: '10,25'"); 
-			System.out.println("\torigem dos dados: 'estatico' ou 'csv'");
+			System.out.println("\torigem dos dados: 'estatico' ou 'csv', caso seja 'csv'");
+			System.out.println("\t\tarquivo de origem dos dados: nome do arquivo CSV (Obs: deve estar na pasta do programa) preencher com qualquer coisa caso estático para poder inserir formatação");
 			System.out.println("\topções de formatação: 'negrito' e/ou 'italico' e/ou 'colorido' e a cor desejada separada por virgula (colorido,corDesejada)");
 			System.out.println();
 			System.exit(1);
@@ -138,11 +139,11 @@ public class Main {
 			String filterValue1Selected = args[5].split(",")[0];
 			String filterValue2Selected = args[5].split(",").length > 1 ? args[5].split(",")[1] : null;
 
-			if (args.length > 7) {
+			if (args.length > 8) {
 				String [] formatArgs = new String[3];
-				formatArgs[0] = args.length > 7 ? args[7] : null;
-				formatArgs[1] = args.length > 8 ? args[8] : null;
-				formatArgs[2] = args.length > 9 ? args[9] : null;
+				formatArgs[0] = args.length > 8 ? args[8] : null;
+				formatArgs[1] = args.length > 9 ? args[9] : null;
+				formatArgs[2] = args.length > 10 ? args[10] : null;
 				
 				for(int i = 0; i < formatArgs.length; i++) {
 					if(formatArgs[i] != null) {
@@ -152,7 +153,7 @@ public class Main {
 							Main.color = formatArgsSplit[1];
 						} else if(formatArgs[i].toUpperCase().equals(formatOptions.NEGRITO.toString())) {
 							Main.negrito = true;
-						} else if(formatArgs[i].equals(formatOptions.ITALICO.toString())) {
+						} else if(formatArgs[i].toUpperCase().equals(formatOptions.ITALICO.toString())) {
 							Main.italico = true;
 						}
 					}
@@ -165,7 +166,7 @@ public class Main {
 
 			List<Produto> produtos = null;
 
-			produtos = args[6].equals("estatico") ? carregaProdutosEstatico() : carregaProdutosCSV("produtos.csv");
+			produtos = args[6].equals("estatico") ? carregaProdutosEstatico() : carregaProdutosCSV(args[7]);
 			
 			if(Main.negrito || Main.italico || Main.colorido) {
 				List<Produto> produtosFormatados = new ArrayList<>();
