@@ -94,8 +94,8 @@ public class Main {
 			Boolean italico = Boolean.parseBoolean(fields[6]);
 			String color = fields[7];
 
-			if(negrito || italico || color != null) {
-				produto = new ProdutoFormatado(produto, negrito, italico, (color != null), color);
+			if(negrito || italico || !color.equals("#000000")) {
+				produto = new ProdutoFormatado(produto, negrito, italico, (!color.equals("#000000")), color);
 			}
 
 			produtos.add(produto);
