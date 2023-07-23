@@ -1,7 +1,7 @@
 package Produto;
 import java.text.NumberFormat;
 
-public class ProdutoFormatadoDecorator implements Produto {
+public abstract class ProdutoFormatadoDecorator implements Produto {
 
 	private static final String SEPARADOR = ", ";
 
