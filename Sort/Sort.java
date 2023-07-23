@@ -9,9 +9,9 @@ import Produto.Produto;
 public class Sort {
   SortStrategy sortStrategy;
 
-  public static Map<SortTypes, SortStrategy> sortOptions = Map.of(
-    SortTypes.INSERTION, new InsertionSort(),
-    SortTypes.QUICK, new QuickSort()
+  public static Map<SortOptions, SortStrategy> sortOptions = Map.of(
+    SortOptions.INSERTION, new InsertionSort(),
+    SortOptions.QUICK, new QuickSort()
   );
 
   public Sort(SortStrategy sortStrategy, Order criterio) {

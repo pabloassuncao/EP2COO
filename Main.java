@@ -126,7 +126,7 @@ public class Main {
 		}
 
 		try {
-			SortStrategy sortStrategySelected = Sort.sortOptions.get(SortTypes.valueOf(args[0].toUpperCase()));
+			SortStrategy sortStrategySelected = Sort.sortOptions.get(SortOptions.valueOf(args[0].toUpperCase()));
 
 			OrderStrategy orderStrategySelected = Order.orderOptions.get(OrderOptions.valueOf(args[1].toUpperCase()));
 

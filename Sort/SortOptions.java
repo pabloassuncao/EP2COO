@@ -1,6 +1,6 @@
 package Sort;
 
-public enum SortTypes {
+public enum SortOptions {
   INSERTION,
   QUICK
 }
