@@ -10,7 +10,8 @@ public class Order {
   public static Map<OrderOptions, OrderStrategy> orderOptions = Map.of(
     OrderOptions.PRECO, new OrderByPrice(),
     OrderOptions.DESCRICAO, new OrderByDescription(),
-    OrderOptions.ESTOQUE, new OrderByStock()
+    OrderOptions.ESTOQUE, new OrderByStock(),
+    OrderOptions.CATEGORIA, new OrderByCategory()
   );
 
   public Order(OrderStrategy orderStrategy, OrderTypes type) {

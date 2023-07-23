@@ -113,7 +113,7 @@ public class Main {
 			System.out.println("\tjava " + GeradorDeRelatorios.class.getName() + " <algoritmo> <critério de ordenação> <critério de filtragem> <parâmetro de filtragem> <opções de formatação>");
 			System.out.println("Onde:");
 			System.out.println("\talgoritmo: 'quick' ou 'insertion'");
-			System.out.println("\tcriterio de ordenação: 'preco' ou 'descricao' ou 'estoque'");
+			System.out.println("\tcriterio de ordenação: 'preco' ou 'descricao' ou 'estoque' ou 'categoria'");
       System.out.println("\t\tcritério de ordenação: 'asc' ou 'desc'");
 			System.out.println("\tcriterio de filtragem: 'todos' ou 'estoque' ou 'categoria' ou 'preco' ou 'descricao'");
       System.out.println("\t\tcritério de filtragem: 'maior_igual' ou 'maior' ou 'igual' ou 'menor_igual' ou 'menor' ou 'diferente' ou 'contem' ou 'entre'");
@@ -132,8 +132,8 @@ public class Main {
 
 			OrderTypes orderTypeSelected = OrderTypes.valueOf(args[2].toUpperCase());
 
-			FilterStrategy filterStrategySelected = args[3].equals("todos") ? new AllElementsFilter() : Filter.filterOptions.get(FilterOptions.valueOf(args[3].toUpperCase()));
-			CompareStrategy compareStrategySelected = args[3].equals("todos") ? new AllCompare() : Compare.compareOptions.get(CompareOptions.valueOf(args[4].toUpperCase()));
+			FilterStrategy filterStrategySelected = args[3].equalsIgnoreCase("todos") ? new AllElementsFilter() : Filter.filterOptions.get(FilterOptions.valueOf(args[3].toUpperCase()));
+			CompareStrategy compareStrategySelected = args[3].equalsIgnoreCase("todos") ? new AllCompare() : Compare.compareOptions.get(CompareOptions.valueOf(args[4].toUpperCase()));
 			
 			CompareOptions compareOp = CompareOptions.valueOf(args[4].toUpperCase());
 
@@ -150,13 +150,13 @@ public class Main {
 					if(formatArgs[i] != null) {
 						if(formatArgs[i].indexOf(',') > -1) {
 							String [] formatArgsSplit = formatArgs[i].split(",");
-							if (formatArgsSplit[0].toUpperCase().equals(formatOptions.COLORIDO.toString())){
+							if (formatArgsSplit[0].equalsIgnoreCase(formatOptions.COLORIDO.toString())){
 								Main.colorido = true;
 								Main.color = formatArgsSplit[1];
 							}
-						} else if(formatArgs[i].toUpperCase().equals(formatOptions.NEGRITO.toString())) {
+						} else if(formatArgs[i].equalsIgnoreCase(formatOptions.NEGRITO.toString())) {
 							Main.negrito = true;
-						} else if(formatArgs[i].toUpperCase().equals(formatOptions.ITALICO.toString())) {
+						} else if(formatArgs[i].equalsIgnoreCase(formatOptions.ITALICO.toString())) {
 							Main.italico = true;
 						}
 					}

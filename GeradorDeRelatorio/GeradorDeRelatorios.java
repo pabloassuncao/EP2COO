@@ -14,6 +14,10 @@ public class GeradorDeRelatorios {
 		this.produtos = produtos;
 	}
 
+	private void debug(Produto p) {
+		System.out.println(p.getQtdEstoque() + " " + p.getPreco() + "  " + p.getDescricao() + " " + p.getCategoria());
+	}
+
 
 	public void geraRelatorio(String arquivoSaida) throws IOException {
 		PrintWriter out = new PrintWriter(arquivoSaida);
@@ -27,7 +31,7 @@ public class GeradorDeRelatorios {
 		int count = 0;
 
 		for (Produto p : produtos) {
-			System.out.println(p.getQtdEstoque() + " " + p.getPreco() + "  " + p.getDescricao());
+			debug(p);
 			out.print("<li>");
 		
 			out.print(p.formataParaImpressao());
