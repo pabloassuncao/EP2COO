@@ -27,7 +27,7 @@ public class GeradorDeRelatorios {
 		int count = 0;
 
 		for (Produto p : produtos) {
-			System.out.println(p.getPreco() + "  " + p.getDescricao());
+			System.out.println(p.getQtdEstoque() + " " + p.getPreco() + "  " + p.getDescricao());
 			out.print("<li>");
 		
 			out.print(p.formataParaImpressao());

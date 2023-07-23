@@ -21,7 +21,7 @@ public class Compare {
     this.compareStrategy = compareStrategy;
   }
 
-  public boolean compare(String toCompare, String value1, String value2, boolean inNumeric) {
-    return compareStrategy.compare(toCompare, value1, value2, inNumeric);
+  public boolean compare(String toCompare, String value1, String value2, boolean isNumeric) {
+    return compareStrategy.compare(toCompare, value1, value2, isNumeric);
   }
 }

@@ -9,8 +9,8 @@ public interface CompareStrategy {
    * @param toCompare Value to compare
    * @param value1 Value 1, this value always will be used
    * @param value2 Value 2, this value will be used only in the BetweenCompare
-   * @param inNumeric If the value is numeric
+   * @param isNumeric If the value is numeric
    * @return
    */
-  boolean compare(String toCompare, String value1, String value2, boolean inNumeric);
+  boolean compare(String toCompare, String value1, String value2, boolean isNumeric);
 }
