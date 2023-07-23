@@ -196,8 +196,11 @@ public class Main {
 		} catch (IOException e) {
 			System.out.println("Erro ao carregar produtos do arquivo CSV!");
 			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			System.out.println("Algum dos argumentos passados é inválido!");
+			System.out.println("O erro encontrado foi: " + e.getMessage());
 		} catch (Exception e) {
-			System.out.println("Erro ao gerar relatório!");
+			System.out.println("Erro desconhecido!");
 			e.printStackTrace();
 		}
 	}
