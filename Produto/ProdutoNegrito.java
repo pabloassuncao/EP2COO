@@ -5,11 +5,6 @@ public class ProdutoNegrito extends ProdutoFormatadoDecorator {
 
 	private static final String SEPARADOR = ", ";
 
-	private int id;
-	private String descricao;
-	private String categoria;
-	private int qtdEstoque;
-	private double preco;
 	private String formatacao = "";
 
 	public ProdutoNegrito(Produto produto){
@@ -18,66 +13,6 @@ public class ProdutoNegrito extends ProdutoFormatadoDecorator {
 			this.formatacao += ((ProdutoFormatadoDecorator) produto).getFormatacao();
 		}
 		this.formatacao += "font-weight:bold;";
-
-		setId(produto.getId());
-		setDescricao(produto.getDescricao());
-		setCategoria(produto.getCategoria());
-		setQtdEstoque(produto.getQtdEstoque());
-		setPreco(produto.getPreco());
-	}
-
-	// setters
-
-	private void setId(int id){
-
-		this.id = id;
-	}
-
-	private void setDescricao(String descricao){
-
-		this.descricao = descricao;
-	}
-
-	private void setCategoria(String categoria){
-
-		this.categoria = categoria;
-	}
-
-	public void setQtdEstoque(int qtdEstoque){
-
-		this.qtdEstoque = qtdEstoque;
-	}
-	
-	public void setPreco(double preco){
-	
-		this.preco = preco;
-	}
-
-	// getters
-
-	public int getId(){
-
-		return this.id;
-	}
-
-	public String getDescricao(){
-
-		return this.descricao;
-	}
-
-	public String getCategoria(){
-
-		return this.categoria;
-	}
-
-	public int getQtdEstoque(){
-
-		return this.qtdEstoque;
-	}
-	
-	public double getPreco(){
-	
-		return this.preco;
 	}
 
 	public String getFormatacao(){
